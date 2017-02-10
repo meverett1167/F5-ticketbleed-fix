@@ -11,8 +11,6 @@ from icontrol.exceptions import iControlUnexpectedHTTPError
 import argparse
 import requests
 import json
-import os
-import time
 import logging
 
 # Logging
@@ -30,6 +28,7 @@ try:
     requests.packages.urllib3.disable_warnings()
 except:
     pass
+
 
 def load_bigip(f5_host,f5_user,f5_pass):
 
@@ -53,6 +52,7 @@ def get_affected_profs(bigip):
             affected_profs.append(cssl_prof.name)
 
     return affected_profs
+
 
 def get_affected_vs(bigip, affected_profs):
     affected_vs_s= []
@@ -102,14 +102,12 @@ def log_it(bigip, affected_profs, affected_vs):
     logger.info("")
 
 
-
-
 def main():
-    usage = "Usage: %prog [options] arg1 arg2"
+    usage = "Usage: %prog [options]"
     parser = argparse.ArgumentParser(usage)
-    parser.add_argument('-c', '--file', dest="creds",
-                      help="Name of file containing F5 BIG-IP systems,"
-                           "and creds", default="bigip_creds.json")
+    parser.add_argument('-c', '--bigip_creds',
+                        help="Name of file containing F5 BIG-IP systems, and credentials",
+                        dest='creds', default='bigip_creds.json')
     parser.add_argument('-m', '--mitigate', action='store_true', default='False',
                         dest='mitigate', help="If set, script will modify config")
 
@@ -135,13 +133,8 @@ def main():
             affected_vs = get_affected_vs(bigip, affected_profs)
             log_it(bigip, affected_profs, affected_vs)
 
-            print options.mitigate
             if options.mitigate == True and len(affected_profs) > 0:
                 modify_cssl_profs(bigip, affected_profs)
-
-        #except Exception, e:
-            #pass
-            #logger.info("Error Connecting to blah:{0}".format(e))
 
 if __name__ == '__main__':
     main()
