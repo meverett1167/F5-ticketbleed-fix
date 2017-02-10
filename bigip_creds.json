@@ -1,0 +1,10 @@
+{
+        "bigip_hostname_or_ip": {
+            "username": "admin",
+            "password": "password"
+        },
+        "bigip_hostname_or_ip": {
+            "username": "admin",
+            "password": "password"
+        }
+}
